@@ -9,16 +9,24 @@ import {
   View,
 } from "react-native";
 import { useChat } from "react-native-vercel-ai";
+import Constants from "expo-constants";
+
+const uri = Constants.expoConfig?.hostUri?.split(":")?.shift();
+const localEndpoint = `http://${uri}:3000/api/chat`;
+
+const api = process.env.EXPO_PUBLIC_API_URL
+  ? `${process.env.EXPO_PUBLIC_API_URL}/api/chat`
+  : localEndpoint;
 
 export default function App() {
-  const { messages, input, handleInputChange, handleSubmit, data, isLoading } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
-      api: "http://localhost:3000/api/chat",
+      api,
     });
 
   return (
     <View style={styles.container}>
-      <ScrollView >
+      <ScrollView>
         {messages.length > 0
           ? messages.map((m) => (
               <Text
@@ -42,7 +50,7 @@ export default function App() {
           </View>
         )}
       </ScrollView>
-      <View style={{ height: 240, width: '100%' }}>
+      <View style={{ height: 240, width: "100%" }}>
         <View style={{ marginTop: 60 }}>
           <TextInput
             value={input}
